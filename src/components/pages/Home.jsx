@@ -4,12 +4,14 @@
 /* eslint no-unused-vars: 0*/
 /* eslint react-hooks/exhaustive-deps: 0*/
 
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../img/logo.svg";
 
 export default function Home() {
   const navigate = useNavigate();
+
+  const [pokemonPage, setPokemonPage] = useState("");
 
   // Functions
   class Pokemon {
@@ -18,6 +20,7 @@ export default function Home() {
     types = [];
     number;
     mainType;
+    id;
   }
 
   Object.defineProperty(String.prototype, "capitalize", {
@@ -29,6 +32,7 @@ export default function Home() {
 
   function newPokemon(pokemonDetail) {
     const pokemon = new Pokemon();
+    pokemon.id = pokemonDetail.id;
     pokemon.name = pokemonDetail.name;
     pokemon.number = "#" + pokemonDetail.id;
     pokemon.picture = pokemonDetail.sprites.other.dream_world.front_default;
@@ -44,9 +48,7 @@ export default function Home() {
   function displayPokemon(pokemonDetail) {
     let pokemon = newPokemon(pokemonDetail);
 
-    return `<li class="pokemon ${pokemon.mainType}" onClick="goToAnotherPage(${
-      pokemonDetail.id
-    })">
+    return `<li class="pokemon ${pokemon.mainType}" id="${pokemon.id}">
             <span class="number">${pokemon.number}</span>
             <span class="name">${pokemon.name.capitalize()}</span>
             <div class="detail">
@@ -72,18 +74,28 @@ export default function Home() {
     console.log("I'm here");
     navigate(`pokemon/${pokemonId}`);
   }
+
+  async function populatePokedex(limit) {
+    let i = 0;
+    for (i = 1; i <= limit; i++) {
+      const pokemonPromise = await getPokemonData(i);
+    }
+    let pokemons = document.querySelectorAll(".pokemon");
+
+    console.log(pokemons);
+
+    pokemons.forEach((pokemon) => {
+      pokemon.addEventListener("click", () => {
+        goToAnotherPage(pokemon.id);
+      });
+    });
+  }
+
+  populatePokedex(10);
+
   // End Functions
 
-  React.useEffect(() => {
-    async function populatePokedex(limit) {
-      let i = 0;
-      for (i = 1; i <= limit; i++) {
-        const pokemonPromise = await getPokemonData(i);
-      }
-    }
-
-    populatePokedex(151);
-  }, []);
+  React.useEffect(() => {}, []);
 
   return (
     <div className="home">
