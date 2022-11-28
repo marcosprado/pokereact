@@ -11,8 +11,6 @@ import logo from "../../img/logo.svg";
 export default function Home() {
   const navigate = useNavigate();
 
-  const [pokemonPage, setPokemonPage] = useState("");
-
   // Functions
   class Pokemon {
     name;
@@ -91,7 +89,7 @@ export default function Home() {
     });
   }
 
-  populatePokedex(10);
+  populatePokedex(151);
 
   // End Functions
 
